@@ -1,24 +1,22 @@
 ---
 title: "summary"
-format: html
-editor: visual
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+    warning: false
+    echo: false
 ---
 
 ```{r}
 library(tidyverse)
+library(kableExtra)
 
+#| echo: FALSE
 #| warning: FALSE
 #| message: FALSE
 ```
-
-## Height
-
-August 09, 2023
-
-```{r}
-
-```
-
 
 
 
@@ -35,9 +33,82 @@ readxl::read_excel("final_data.xlsx") |>
 ```
 
 ```{r}
-data |> 
-  ggplot(aes(x = rate, 
-             y = weigh_of_kernels, 
-             color = variety)) +
-  geom_point()
+data
 ```
+
+
+## Height
+
+August 09, 2023
+
+```{r}
+#| warning: FALSE
+readxl::read_excel("sweet corn data_9_aout.xlsx") |> 
+  janitor::clean_names() |> 
+  separate(insertion, into = c("ins1", "ins2", "ins3"), sep = "/") -> height
+```
+
+```{r}
+height |> 
+  left_join(data, by = c("plot_number" = "plot")) |> 
+  select(1:10) |> 
+  mutate_if(is_character, as.double) -> height1
+```
+
+
+```{r}
+height1 |> 
+  ggplot(aes(x = rate, y = height, color = variety)) +
+#  geom_boxplot() +
+  geom_jitter(alpha = 0.3) +
+  geom_smooth(na.rm = TRUE, method = "lm", se = FALSE, linewidth = 2) +
+  facet_grid(~variety) +
+  ylim(0, 300) +
+  labs(x = expression(bold(paste("N rate (kg ha"^"-1",")"))), 
+       y = "Plant height (cm)") +
+  theme_bw() +
+  theme(legend.position="none",
+        axis.title = element_text(face = "bold", size = 14),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(face = "bold", size = 14)
+        )
+
+ggsave("height.png", width = 9, height = 4)
+```
+
+
+
+```{r}
+height1 |> 
+  group_by(variety, rate) |> 
+  summarise(height_mean = round(mean(height),0)) -> height2
+```
+
+```{r}
+height1 |> 
+  group_by(plot_number, plant) |> 
+  mutate(insertion = round(mean(c(ins1, ins2, ins3), na.rm = TRUE),0)) |> 
+  group_by(variety, rate) |> 
+  summarise(`number of ears` = round(mean(amount, na.rm = TRUE,0)), 
+            `ear insertion` = round(mean(insertion, na.rm = TRUE),0)) -> height3
+```
+
+```{r}
+height2 |> 
+  left_join(height3) |> 
+  rename(Variety = variety,
+         `N rate (kg/ha)` = rate,
+         `Plant height (cm)` = height_mean,
+         `Number of ears` = `number of ears`,
+         `Ear insertion (cm)` = `ear insertion`) |> 
+  kable(booktabs = T) |> 
+  kable_styling(latex_options = "striped", full_width = F) |> 
+  pack_rows("Variety 1", 1, 6) |> 
+  pack_rows("Variety 2", 7, 12) |> 
+  pack_rows("Variety 3", 13, 18)
+```
+
+
+
+
+
