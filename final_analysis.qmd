@@ -1,0 +1,43 @@
+---
+title: "summary"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+
+#| warning: FALSE
+#| message: FALSE
+```
+
+## Height
+
+August 09, 2023
+
+```{r}
+
+```
+
+
+
+
+```{r}
+#| warning: FALSE
+readxl::read_excel("final_data.xlsx") |> 
+  janitor::clean_names() |> 
+  mutate_if(is_character, funs(str_remove(., "%"))) |> 
+  mutate_if(is_character, funs(str_replace(., ",", "."))) |> 
+  mutate(variety = as_factor(variety)) |> 
+  mutate_if(is_character, as.double) |> 
+  mutate(across(c("weight_of_husks", "weight_of_ears", 
+                  "percent_moisture", "percent_recoverry"), round, 2)) -> data
+```
+
+```{r}
+data |> 
+  ggplot(aes(x = rate, 
+             y = weigh_of_kernels, 
+             color = variety)) +
+  geom_point()
+```
