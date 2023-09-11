@@ -1,0 +1,228 @@
+---
+title: "Relationship Between Yield of Processing Sweet Corn and Nitrogen (N) Rate"
+author: "Maxwel Coura Oliveira, PhD and Diego Alvarez de Lorenzana"
+format: 
+  pdf:
+    include-in-header:
+      - text: |
+          \definecolor{tomato}{HTML}{FF6347}
+          \definecolor{gold}{HTML}{FFD700}
+          \definecolor{offwhite}{HTML}{FAF9F6}
+          \definecolor{skyblue}{HTML}{87ceeb}
+          \pagecolor{offwhite}
+#    fontfamily: libertinus
+#    fontfamilyoptions:
+#     - osf
+#     - p
+    geometry:
+     - top=30mm
+     - left=20mm
+     - heightrounded
+editor: source
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+
+```{r}
+library(tidyverse)
+library(flextable)
+```
+
+**Project requested by** Yves Duquet of [Aliments Nortera (Bonduelle Canada inc)](https://www.bonduelle.com/en/)
+
+
+
+
+## Objective
+
+
+The primary purpose of the trial is to compare the effect of applied N rates per hectare on the yield and grain quality of two processing sweet corn, GSS 3951, GH 6462, and GH 6055. Yields per hectare have become an element of competitiveness between Nortera's production regions, and also against our North American competitors.
+
+## Methods
+
+### Plant material
+
+```{r}
+tribble(
+  ~Type, ~Description, 
+  "Local", "Emile A. Lods Agronomy Research Centre", 
+  "Sweet corn", "GSS 3951 and GH 6462 (late maturity) and GH 6055 (mid maturity)", 
+  "N", "6 rates", 
+  "Seed rate", "22000 seeds/acre",             
+  "Row width",  "75 cm", 
+  "Planting time", "June, 2023/24/25",
+  "Plot size", "Width: four rows (3m), Length: 7m",
+  "Layout", "Split-plot design"
+) |> 
+  flextable() |> 
+  autofit() %>% 
+  align(align = "center", part = "all")
+```
+
+
+### Treatment labels
+
+
+
+```{r}
+tribble(
+  ~`Sweet corn`, ~N, ~`Block 1`, ~`Block 2`, ~`Block 3`, 
+  "", "kg/ha", "", "", "",
+  "GSS 3951", "0", "101", "209", "304", 
+  "GSS 3951", "40", "102", "210", "302",         
+  "GSS 3951", "80", "103", "212", "305", 
+  "GSS 3951", "120", "104", "211", "306", 
+  "GSS 3951", "160", "105", "207", "303", 
+  "GSS 3951", "200", "106", "208", "301", 
+  "GH 6462", "0", "107", "218", "310", 
+  "GH 6462", "40", "108", "213", "309",       
+  "GH 6462", "80", "109", "217", "311", 
+  "GH 6462", "120", "110", "215", "308", 
+  "GH 6462", "160", "111", "216", "312", 
+  "GH 6462", "200", "112", "214", "307", 
+  "GH 6055", "0", "113", "206", "317",
+  "GH 6055", "40", "114", "203", "313",      
+  "GH 6055", "80", "115", "205", "314",
+  "GH 6055", "120", "116", "202", "315", 
+  "GH 6055", "160", "117", "204", "318", 
+  "GH 6055", "200", "118", "201", "316"
+) |> 
+  flextable() |> 
+    bg(i = 2:7, 
+          part = "body",
+          bg = "tomato") |> 
+    bg(i = 8:13, 
+          part = "body",
+          bg = "gold") |> 
+    bg(i = 14:19, 
+          part = "body",
+          bg = "skyblue") |> 
+  autofit() %>% 
+  align(align = "center", part = "all") |> 
+  add_header_row(values = c("Treatments","Rep"),
+  colwidths = c(2,3))
+```
+
+
+### Trial map
+
+**Long width / Short length:** 18 plots in a row for each block.
+
+**Size:** 54 m (width) x 28 m (length)^[It might be needed to add extra space in between blocks for seeder turning around plots]
+
+
+```{r}
+tribble(
+  ~Block, ~`1`, ~`2`, ~`3`, ~`4`, ~`5`, ~`6`, ~`7`, ~`8`, ~`9`, ~`10`, ~`11`, ~`12`, ~`13`, ~`14`, ~`15`, ~`16`, ~`17`, ~`18`,
+  "Block 3", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311", "312", "313", "314", "315", "316", "317", "318",
+"Block 2", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218",
+  "Block 1", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118"
+) |> 
+  rename(` ` = Block) |> 
+  flextable() |> 
+  fit_to_width(max_width = 7) |> 
+  bg(i = 1, 
+     j = 14:19,
+          part = "body",
+          bg = "skyblue") |> 
+  bg(i = 1, 
+     j = 8:13,
+          part = "body",
+          bg = "gold") |> 
+  bg(i = 1, 
+     j = 2:7,
+          part = "body",
+          bg = "tomato") |> 
+  bg(i = 2, 
+     j = 2:7,
+          part = "body",
+          bg = "skyblue") |> 
+  bg(i = 2, 
+     j = 8:13,
+          part = "body",
+          bg = "tomato") |> 
+  bg(i = 2, 
+     j = 14:19,
+          part = "body",
+          bg = "gold") |> 
+  bg(i = 3, 
+     j = 14:19,
+          part = "body",
+          bg = "skyblue") |> 
+  bg(i = 3, 
+     j = 8:13,
+          part = "body",
+          bg = "gold") |> 
+  bg(i = 3, 
+     j = 2:7,
+          part = "body",
+          bg = "tomato") |> 
+  align(align = "center", part = "all") |> 
+  add_header_row(values = c(" ", "Plots"),
+  colwidths = c(1,18)) |> 
+  fontsize(size = 10, part = "all") 
+```
+
+
+## Inputs
+
+
+
+```{r}
+tribble(
+  ~Input, ~Product, ~Rate, ~Type, ~Timing,
+  "Fertilizer", "TBD", "TBD",  "Broadcast",    "Pre-seeding",
+  "",           "Calcium Ammonium Nitrate", "6 N treatments", "Side-dressed", "Height of 15-20 cm",
+  "Herbicide",  "Acuron Flexi", "3.7 L/ha", "Pre-emergence", "Up to 3 days after planting"
+) |> 
+  flextable() |> 
+  autofit() %>% 
+  align(align = "center", part = "all")
+```
+
+
+Calcium Ammonium Nitrate (27-0-0)
+
+**N rates**: 0 kg N/ha; 40 kg N/ha, 80 kg N/ha, 120 kg N/ha, 160 kg N/ha, 200 kg N/ha
+
+
+## Data collection
+
+```{r}
+tribble(
+  ~Data, ~Procedure,
+  "Date 10% flowering",   "Note the date when 10% of the plants have developed their silks",
+  "Harvest date", "Note the date the plot is harvested",
+  "Plant heights", "Take the height of the plants on 5 randomly selected plants",
+  "Height of the ears", "Take the height of the ears on 5 plants chosen at random", 
+  "% moisture at harvest", "Note the moisture reading at harvest", 
+  "% recovery at harvest", "Assess according to theoretical method", 
+  "Yield", "Note the theoretical and practical yield at harvest", 
+  "Number of ears per plant", "Count the number of ears per plant on 10 plants", 
+  "Lodging", "Rate pre-harvest lodging from 1 to 5",
+  "Diseases", "Note the diseases observed in the plot and score on a scale of 1 to 5"
+) |> 
+  flextable() |> 
+  autofit() %>% 
+  align(align = "left", part = "all")
+```
+
+
+## Harvest
+
+The harvest date is determined by measuring moisture from pre-harvest samples. Twenty five ears are sampled (5 ears at 5 different locations) taken at random from the fertilized plot and the untreated control. Sweet corn is harvested when a % humidity of 72% for Su and 76% for Sh2 is obtained. In addition, the theoretical % recovery must be between 45% for Su and 50% for Sh2
+
+## Planting date
+
+May 29, 2023
+
+## N application date
+
+June 27, 2023 - V4-V5
+
+# Flowering
+
+10% flowering: July 21

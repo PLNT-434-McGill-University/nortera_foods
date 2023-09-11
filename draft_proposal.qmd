@@ -1,0 +1,86 @@
+---
+title: "Relationship Between Yield of Processing Sweet Corn and Nitrogen (N) Rate"
+subtitle: "**Project requested by** Yves Duquet of [Aliments Nortera (Bonduelle Canada inc)](https://www.bonduelle.com/en/)"
+author: "Principal investigator: Maxwel C Oliveira, PhD"
+institute: "McGill University"
+format: pdf
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r}
+library(kableExtra)
+library(tidyverse)
+```
+
+
+
+
+## Budget
+
+```{r}
+tribble(
+  ~Year, ~`Direct costs`, ~`Indirect costs`,
+    "2023", "$20,000", "8,000",
+      "2024", "$20,000", "8,000",
+          "2025", "$20,000", "8,000"
+) |> 
+  kable(booktabs = T) |> 
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+
+
+## Objective
+
+The primary purpose of the trial is to compare the effect of applied N rates per acre on the yield and grain quality of processing sweet corn. Yields per acre have become an element of competitiveness between Nortera's production regions, and also against our North American competitors.
+
+
+## Problem of Quebec production
+
+
+It is important for agricultural producers in Quebec an attractive income (gross margin) per acre for sweet corn compared to cereals (grain corn and soybeans). In Quebec, sweet corn production is the most northern of all producing regions for processing in America. While is needed the same sweet corn production tools to remain competitive with other locations, restriction, including levels of fertilizer and banned pesticides, limit sweet corn production in Quebec. Nonetheless, the common denominator of competitiveness against other regions is the cost per ton; therefore, the yield per acre remains the important element to improve in Quebec. Therefore, there is a need to investigate sweet corn yield response to increasing N levels. 
+
+
+## Hypothesis and means proposed 
+
+- Control of production costs at the farm (no control possible by Bonduelle on part of the production costs)  
+
+- Improve yields obtained per acre through cultivar selection, better technical monitoring and applied N rates 
+
+- Currently, applied N rates in processing sweet corn production are authorized by individual farm PAEFs come from fertilizers or manure / slurry.
+
+## Experimental apparatus
+
+The experiment will be arranged in a randomized completed block design in factorial arrangement. There will be two sweet corn varieties (Su and Sh2), six N rates (0-100-125-150-175-200 kilos N hectare^-1^), and four blocks. The seeding rate will be 21,500 seeds acre^-1^.
+
+                                  
+## Data collection:
+
+
+
+```{r}
+tribble(
+  ~Data, ~Procedure,
+  "Date 10% flowering",   "Note the date when 10% of the plants have developed their silks",
+  "Harvest date", "Note the date the plot is harvested",
+  "Plant heights", "Take the height of the plants on 5 randomly selected plants",
+  "Height of the ears", "Take the height of the ears on 5 plants chosen at random", 
+  "% moisture at harvest", "Note the moisture reading at harvest", 
+  "% recovery at harvest", "Assess according to theoretical method", 
+  "Yield", "Note the theoretical and practical yield at harvest", 
+  "Number of ears per plant", "Count the number of ears per plant on 10 plants", 
+  "Lodging", "Rate pre-harvest lodging from 1 to 5",
+  "Diseases", "Note the diseases observed in the plot and score on a scale of 1 to 5"
+) |> 
+  kable(booktabs = T) |> 
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+
+
+## Harvest
+
+The harvest date is determined by measuring moisture from pre-harvest samples. Twenty five ears are sampled (5 ears at 5 different locations) taken at random from the fertilized plot and the untreated control. Sweet corn is harvested when a % humidity of 72% for Su and 76% for Sh2 is obtained. In addition, the theoretical % recovery must be between 45% for Su and 50% for Sh2
