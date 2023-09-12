@@ -1,5 +1,5 @@
 ---
-title: "summary"
+title: "Relationship Between Yield of Processing Sweet Corn and Nitrogen (N) Rate"
 format:
   pdf:
     toc: true
@@ -13,6 +13,7 @@ format:
 ```{r}
 library(tidyverse)
 library(kableExtra)
+knitr::opts_chunk$set(fig.width = 9, fig.height = 4)
 ```
 
 
@@ -30,21 +31,72 @@ read_csv("final_data.csv") |>
                   "percent_moisture", "percent_recoverry"), round, 2)) -> data
 ```
 
+## Percent of recovery
+
+The figure below shows an overall trend of % of recovery and N rates across the three sweet corn varieties. 
 
 ```{r}
 data |> 
-  ggplot(aes(x = rate, y = percent_recoverry)) +
+  ggplot(aes(x = rate, y = percent_recoverry, 
+             color = variety, 
+             fill = variety)) +
   facet_grid(~variety) +
   geom_jitter() +
   ylim(0,85) +
-  geom_smooth(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE, linewidth = 2) +
   theme_bw() +
+  scale_x_continuous(breaks=c(0, 40, 80, 120, 160, 200)) +
+  labs(x = expression(bold(paste("N rate (kg ha"^"-1",")"))), 
+       y = "% recovery") +
   theme(legend.position="none",
         axis.title = element_text(face = "bold", size = 14),
         axis.text = element_text(size = 12),
         strip.text = element_text(face = "bold", size = 14)
         )
 ```
+
+The table below shows the % of moisture and % of recovery at each N level across the three sweet corn varieties. 
+
+```{r}
+data |> 
+  group_by(variety, rate) |> 
+  summarise(moisture_mean = round(mean(percent_moisture, na.rm = TRUE),1),
+    recovery_mean = round(mean(percent_recoverry, na.rm = TRUE),1)) |> 
+  rename(Variety = variety,
+         `N rate (kg/ha)` = rate,
+         `% moisture` = moisture_mean,
+         `% recovery` = `recovery_mean`) |> 
+    kable(booktabs = T) |> 
+  kable_styling(latex_options = "striped", full_width = F) |> 
+  pack_rows("GH 6055", 1, 6) |> 
+  pack_rows("GSS 3951", 7, 12) |> 
+  pack_rows("GH 6462", 13, 18)
+```
+
+## Yield
+
+The yield is calculated based on the of total ear weight by total number of harvested samples. 
+
+```{r}
+data |> 
+  mutate(yield1 = weight_of_ears / samples, na.rm=TRUE) |> 
+  ggplot(aes(x = rate, y = yield1, 
+             color = variety, 
+             fill = variety)) +
+  facet_grid(~variety) +
+  geom_jitter() +
+  ylim(0,13) +
+  geom_smooth(na.rm = TRUE, linewidth = 2) +
+  theme_bw() +
+  scale_x_continuous(breaks=c(0, 40, 80, 120, 160, 200)) +
+  labs(x = expression(bold(paste("N rate (kg ha"^"-1",")"))), 
+       y = expression(bold(paste("yield (lb sample"^"-1",")")))) +
+  theme(legend.position="none",
+        axis.title = element_text(face = "bold", size = 14),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(face = "bold", size = 14))
+```
+
 
 
 ## Height
@@ -68,10 +120,10 @@ height |>
 
 ```{r}
 height1 |> 
-  ggplot(aes(x = rate, y = height, color = variety)) +
+  ggplot(aes(x = rate, y = height, color = variety, fill = variety)) +
 #  geom_boxplot() +
   geom_jitter(alpha = 0.3) +
-  geom_smooth(na.rm = TRUE, method = "lm", se = FALSE, linewidth = 2) +
+  geom_smooth(na.rm = TRUE, method = "lm", se = TRUE, linewidth = 2) +
   facet_grid(~variety) +
   ylim(0, 300) +
   labs(x = expression(bold(paste("N rate (kg ha"^"-1",")"))), 
@@ -82,9 +134,8 @@ height1 |>
         axis.text = element_text(size = 12),
         strip.text = element_text(face = "bold", size = 14)
         )
-
-ggsave("height.png", width = 9, height = 4)
 ```
+
 
 
 
@@ -113,9 +164,9 @@ height2 |>
          `Ear insertion (cm)` = `ear insertion`) |> 
   kable(booktabs = T) |> 
   kable_styling(latex_options = "striped", full_width = F) |> 
-  pack_rows("Variety 1", 1, 6) |> 
-  pack_rows("Variety 2", 7, 12) |> 
-  pack_rows("Variety 3", 13, 18)
+  pack_rows("GH 6055", 1, 6) |> 
+  pack_rows("GSS 3951", 7, 12) |> 
+  pack_rows("GH 6462", 13, 18)
 ```
 
 
