@@ -6,24 +6,22 @@ format:
     number-sections: true
     colorlinks: true
     warning: false
+    message: false
     echo: false
 ---
 
 ```{r}
 library(tidyverse)
 library(kableExtra)
-
-#| echo: FALSE
-#| warning: FALSE
-#| message: FALSE
 ```
 
 
 
 ```{r}
 #| warning: FALSE
-readxl::read_excel("final_data.xlsx") |> 
+read_csv("final_data.csv") |> 
   janitor::clean_names() |> 
+  select(-harvested_date) |> 
   mutate_if(is_character, funs(str_remove(., "%"))) |> 
   mutate_if(is_character, funs(str_replace(., ",", "."))) |> 
   mutate(variety = as_factor(variety)) |> 
@@ -32,14 +30,26 @@ readxl::read_excel("final_data.xlsx") |>
                   "percent_moisture", "percent_recoverry"), round, 2)) -> data
 ```
 
+
 ```{r}
-data
+data |> 
+  ggplot(aes(x = rate, y = percent_recoverry)) +
+  facet_grid(~variety) +
+  geom_jitter() +
+  ylim(0,85) +
+  geom_smooth(na.rm = TRUE) +
+  theme_bw() +
+  theme(legend.position="none",
+        axis.title = element_text(face = "bold", size = 14),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(face = "bold", size = 14)
+        )
 ```
 
 
 ## Height
 
-August 09, 2023
+Plant height, number of ears and ear insertion were assessed on August 09, 2023.
 
 ```{r}
 #| warning: FALSE
