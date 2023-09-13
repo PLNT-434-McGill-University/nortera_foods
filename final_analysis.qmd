@@ -67,7 +67,7 @@ data |>
          `% moisture` = moisture_mean,
          `% recovery` = `recovery_mean`) |> 
     kable(booktabs = T) |> 
-  kable_styling(latex_options = "striped", full_width = F) |> 
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = F) |> 
   pack_rows("GH 6055", 1, 6) |> 
   pack_rows("GSS 3951", 7, 12) |> 
   pack_rows("GH 6462", 13, 18)
@@ -75,7 +75,7 @@ data |>
 
 ## Yield
 
-The yield is calculated based on the of total ear weight by total number of harvested samples. 
+The yield is calculated based on the of total ear weight by total number of harvested samples. I am not sure what is the weight unit used with the sweet corn samples. 
 
 ```{r}
 data |> 
@@ -90,12 +90,37 @@ data |>
   theme_bw() +
   scale_x_continuous(breaks=c(0, 40, 80, 120, 160, 200)) +
   labs(x = expression(bold(paste("N rate (kg ha"^"-1",")"))), 
-       y = expression(bold(paste("yield (lb sample"^"-1",")")))) +
+       y = expression(bold(paste("yield (XX sample"^"-1",")")))) +
   theme(legend.position="none",
         axis.title = element_text(face = "bold", size = 14),
         axis.text = element_text(size = 12),
         strip.text = element_text(face = "bold", size = 14))
 ```
+
+Table below shows the average results for yield, including total weight, weight of husks, weight of ears, and weigh of kernels
+
+```{r}
+data |> 
+  select(variety, rate, samples, block, total_weight, weight_of_husks, weight_of_ears, weigh_of_kernels) |> 
+  group_by(variety, rate) |> 
+  summarise(samples = round(mean(samples, na.rm = TRUE),0),
+            total_weight = round(mean(total_weight, na.rm = TRUE),1),
+            weight_of_husks = round(mean(weight_of_husks, na.rm = TRUE),1),
+            weight_of_ears = round(mean(weight_of_ears, na.rm = TRUE),1),
+            weigh_of_kernels = round(mean(weigh_of_kernels, na.rm = TRUE),1)) |> 
+  rename(Variety = variety,
+         `N rate (kg/ha)` = rate,
+         `Total weight` = total_weight,
+         `Weight of husks` = weight_of_husks,
+         `Weight of ears` = weight_of_ears,
+         `Weight of kernels` = weigh_of_kernels) |> 
+  kable(booktabs = T) |> 
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = F) |> 
+  pack_rows("GH 6055", 1, 6) |> 
+  pack_rows("GSS 3951", 7, 12) |> 
+  pack_rows("GH 6462", 13, 18)
+```
+
 
 
 
@@ -163,7 +188,7 @@ height2 |>
          `Number of ears` = `number of ears`,
          `Ear insertion (cm)` = `ear insertion`) |> 
   kable(booktabs = T) |> 
-  kable_styling(latex_options = "striped", full_width = F) |> 
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = F) |>  
   pack_rows("GH 6055", 1, 6) |> 
   pack_rows("GSS 3951", 7, 12) |> 
   pack_rows("GH 6462", 13, 18)
