@@ -1,5 +1,6 @@
 ---
 title: "Relationship Between Yield of Processing Sweet Corn and Nitrogen (N) Rate"
+subtitle: "Summary of results"
 format:
   pdf:
     toc: true
@@ -24,7 +25,7 @@ read_csv("final_data.csv") |>
   janitor::clean_names() |> 
   select(-harvested_date) |> 
   mutate_if(is_character, funs(str_remove(., "%"))) |> 
-  mutate_if(is_character, funs(str_replace(., ",", "."))) |> 
+#  mutate_if(is_character, funs(str_replace(., ",", "."))) |> 
   mutate(variety = as_factor(variety)) |> 
   mutate_if(is_character, as.double) |> 
   mutate(across(c("weight_of_husks", "weight_of_ears", 
@@ -85,19 +86,19 @@ data |>
              fill = variety)) +
   facet_grid(~variety) +
   geom_jitter() +
-  ylim(0,13) +
+  ylim(0,1.5) +
   geom_smooth(na.rm = TRUE, linewidth = 2) +
   theme_bw() +
   scale_x_continuous(breaks=c(0, 40, 80, 120, 160, 200)) +
   labs(x = expression(bold(paste("N rate (kg ha"^"-1",")"))), 
-       y = expression(bold(paste("yield (XX sample"^"-1",")")))) +
+       y = expression(bold(paste("Yield (XX sample"^"-1",")")))) +
   theme(legend.position="none",
         axis.title = element_text(face = "bold", size = 14),
         axis.text = element_text(size = 12),
         strip.text = element_text(face = "bold", size = 14))
 ```
 
-Table below shows the average results for yield, including total weight, weight of husks, weight of ears, and weigh of kernels
+Table below shows the average results for yield, including total weight, weight of husks, weight of ears, and weigh of kernels.
 
 ```{r}
 data |> 
@@ -110,12 +111,13 @@ data |>
             weigh_of_kernels = round(mean(weigh_of_kernels, na.rm = TRUE),1)) |> 
   rename(Variety = variety,
          `N rate (kg/ha)` = rate,
+         `Samples` = samples, 
          `Total weight` = total_weight,
          `Weight of husks` = weight_of_husks,
          `Weight of ears` = weight_of_ears,
          `Weight of kernels` = weigh_of_kernels) |> 
   kable(booktabs = T) |> 
-  kable_styling(latex_options = c("striped", "hold_position"), full_width = F) |> 
+  kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = FALSE) |> 
   pack_rows("GH 6055", 1, 6) |> 
   pack_rows("GSS 3951", 7, 12) |> 
   pack_rows("GH 6462", 13, 18)
